@@ -2,8 +2,8 @@
   "name": "WebChimera.js",
   "version": "0.1.0",
   "cmake-js": {
-    "runtime": "nw",
-    "runtimeVersion": "0.12.1",
+    "runtime": "atom-shell",
+    "runtimeVersion": "0.26.0",
     "arch": "ia32"
   }
 }
