@@ -5,5 +5,8 @@
     "runtime": "atom-shell",
     "runtimeVersion": "0.26.0",
     "arch": "ia32"
+  },
+  "devDependencies": { 
+  	"cmake-js": "Ivshti/cmake-js"
   }
 }
