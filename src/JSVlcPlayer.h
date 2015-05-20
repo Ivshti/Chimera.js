@@ -1,8 +1,5 @@
 #pragma once
 
-#include <memory>
-#include <deque>
-
 #include <v8.h>
 #include <node.h>
 #include <node_object_wrap.h>
@@ -26,23 +23,6 @@ private:
     JsVlcPlayer( const v8::Local<v8::Function>& renderCallback );
     ~JsVlcPlayer();
 
-    enum Callbacks_e {
-        CB_FRAME_SETUP,
-        CB_FRAME_READY,
-        CB_FRAME_CLEANUP,
-
-        CB_MAX,
-    };
-
-    struct AsyncData;
-    struct FrameSetupData;
-    struct FrameUpdated;
-    struct CallbackData;
-
-    void handleAsync();
-    void setupBuffer( unsigned width, unsigned height );
-    void frameUpdated();
-
 private:
     unsigned video_format_cb( char* chroma,
                               unsigned* width, unsigned* height,
@@ -54,17 +34,25 @@ private:
     void video_display_cb( void* picture ) override;
 
 private:
+    void setupBuffer();
+    void frameUpdated();
+
+private:
     static v8::Persistent<v8::Function> _jsConstructor;
 
     libvlc_instance_t* _libvlc;
     vlc::player _player;
 
-    uv_async_t _async;
-    std::deque<std::shared_ptr<AsyncData> > _asyncData;
+    uv_async_t _formatSetupAsync;
+    uv_async_t _frameUpdatedAsync;
+
+    unsigned _frameWidth;
+    unsigned _frameHeight;
 
     std::vector<char> _tmpFrameBuffer;
+
     v8::Persistent<v8::Object> _jsFrameBuffer;
     char* _jsRawFrameBuffer;
 
-    v8::Persistent<v8::Function> _jsCallbacks[CB_MAX];
+    v8::Persistent<v8::Function> _jsRenderCallback;
 };
