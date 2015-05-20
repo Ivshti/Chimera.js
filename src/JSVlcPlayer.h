@@ -48,6 +48,9 @@ private:
 
     unsigned _frameWidth;
     unsigned _frameHeight;
+    
+    unsigned m_UPlaneOffset;
+    unsigned m_VPlaneOffset;
 
     std::vector<char> _tmpFrameBuffer;
 

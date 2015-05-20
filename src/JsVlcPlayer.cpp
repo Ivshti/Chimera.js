@@ -53,15 +53,23 @@ unsigned JsVlcPlayer::video_format_cb( char* chroma,
     _frameWidth  = *width;
     _frameHeight = *height;
 
-    memcpy( chroma, vlc::DEF_CHROMA, sizeof( vlc::DEF_CHROMA ) - 1 );
-    *pitches = _frameWidth * vlc::DEF_PIXEL_BYTES;
-    *lines = _frameHeight;
+    memcpy( chroma, "I420", 4 );
+    pitches[0] = _frameWidth; if( pitches[0] % 4 ) pitches[0] += 4 - pitches[0] % 4;
+    pitches[1] = ( _frameWidth + 1 ) / 2; if( pitches[1] % 4 ) pitches[1] += 4 - pitches[1] % 4;
+    pitches[2] = pitches[1];
 
-    _tmpFrameBuffer.resize( *pitches * *lines );
+    lines[0] = _frameHeight;
+    lines[1] = ( _frameHeight + 1 ) / 2;
+    lines[2] = lines[1];
+
+    m_UPlaneOffset = pitches[0] * lines[0];
+    m_VPlaneOffset = m_UPlaneOffset + pitches[1] * lines[1];
+
+    _tmpFrameBuffer.resize( pitches[0] * lines[0] + pitches[1] * lines[1] + pitches[2] * lines[2] );
 
     uv_async_send( &_formatSetupAsync );
 
-    return 1;
+    return 3;
 }
 
 void JsVlcPlayer::video_cleanup_cb()
@@ -69,19 +77,28 @@ void JsVlcPlayer::video_cleanup_cb()
     if( !_tmpFrameBuffer.empty() )
         std::vector<char>().swap(_tmpFrameBuffer);
 
+    m_UPlaneOffset = m_VPlaneOffset = 0;
+
     uv_async_send( &_frameUpdatedAsync );
 }
 
 void* JsVlcPlayer::video_lock_cb( void** planes )
 {
     if( _tmpFrameBuffer.empty() ) {
-        *planes = _jsRawFrameBuffer;
+        planes[0] = _jsRawFrameBuffer;
+        planes[1] = _jsRawFrameBuffer + m_UPlaneOffset;
+        planes[2] = _jsRawFrameBuffer + m_VPlaneOffset;
     } else {
         if( _jsRawFrameBuffer ) {
             std::vector<char>().swap(_tmpFrameBuffer);
-            *planes = _jsRawFrameBuffer;
+            planes[0] = _jsRawFrameBuffer;
+            planes[1] = _jsRawFrameBuffer + m_UPlaneOffset;
+            planes[2] = _jsRawFrameBuffer + m_VPlaneOffset;
         } else {
-            *planes = _tmpFrameBuffer.data();
+            char* b = _tmpFrameBuffer.data();
+            planes[0] = b;
+            planes[1] = b + m_UPlaneOffset;
+            planes[2] = b + m_VPlaneOffset;
         }
     }
 
