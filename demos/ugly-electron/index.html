@@ -59,6 +59,8 @@ function render( videoFrame )
 
 function initCanvas()
 {
+	// TODO: re-init on video change or window re-size
+	
 	gl = canvas.getContext("webgl");
 
 	var vertexShaderSource =

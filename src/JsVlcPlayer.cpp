@@ -68,7 +68,6 @@ void JsVlcPlayer::video_cleanup_cb()
 {
     if( !_tmpFrameBuffer.empty() )
         std::vector<char>().swap(_tmpFrameBuffer);
-        //_tmpFrameBuffer.swap( const std::vector<char>() );
 
     uv_async_send( &_frameUpdatedAsync );
 }
@@ -80,7 +79,6 @@ void* JsVlcPlayer::video_lock_cb( void** planes )
     } else {
         if( _jsRawFrameBuffer ) {
             std::vector<char>().swap(_tmpFrameBuffer);
-            //_tmpFrameBuffer.swap( const std::vector<char>() );
             *planes = _jsRawFrameBuffer;
         } else {
             *planes = _tmpFrameBuffer.data();
