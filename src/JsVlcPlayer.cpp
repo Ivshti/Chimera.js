@@ -144,6 +144,10 @@ void JsVlcPlayer::setupBuffer()
                 Integer::New( isolate, _frameWidth ) );
     array->Set( String::NewFromUtf8( isolate, "height" ),
                 Integer::New( isolate, _frameHeight) );
+    array->Set( String::NewFromUtf8( isolate, "UPlaneOffset" ),
+                Integer::New( isolate, m_UPlaneOffset ) );
+    array->Set( String::NewFromUtf8( isolate, "VPlaneOffset" ),
+                Integer::New( isolate, m_VPlaneOffset) );
 
     _jsFrameBuffer.Reset( isolate, array );
 
