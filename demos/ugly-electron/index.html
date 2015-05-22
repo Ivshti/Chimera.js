@@ -48,7 +48,7 @@ function glCanvas()
 var canvas, y, u, v;
 function render( videoFrame )
 {
-	if (! canvas) {
+	if (!canvas) {
 		canvas = glCanvas();
 		initFrame(videoFrame);
 	};
@@ -66,10 +66,9 @@ function render( videoFrame )
 function initFrame(videoFrame)
 {
 	// TODO: re-init on video change or window re-size
-	
 	var width = videoFrame.width, height = videoFrame.height;
 	canvas.width = width;
-	canvas.height = height;
+	canvas.height = height;	
 
 	gl = canvas.getContext("webgl");
 
@@ -135,8 +134,9 @@ function initPlayer() {
 	vlcPlayer.play("file:///Users/ivogeorgiev/Downloads/1.mkv");	
 }
 
+
 </script>
 <body onload="initPlayer()">
-<canvas id="glCanvas"></canvas>
+<canvas id="glCanvas" style="width: 100%; height: 100%;"></canvas>
 </body>
 </html>
