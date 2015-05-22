@@ -84,23 +84,13 @@ void JsVlcPlayer::video_cleanup_cb()
 
 void* JsVlcPlayer::video_lock_cb( void** planes )
 {
-    if( _tmpFrameBuffer.empty() ) {
-        planes[0] = _jsRawFrameBuffer;
-        planes[1] = _jsRawFrameBuffer + m_UPlaneOffset;
-        planes[2] = _jsRawFrameBuffer + m_VPlaneOffset;
-    } else {
-        if( _jsRawFrameBuffer ) {
-            std::vector<char>().swap(_tmpFrameBuffer);
-            planes[0] = _jsRawFrameBuffer;
-            planes[1] = _jsRawFrameBuffer + m_UPlaneOffset;
-            planes[2] = _jsRawFrameBuffer + m_VPlaneOffset;
-        } else {
-            char* b = _tmpFrameBuffer.data();
-            planes[0] = b;
-            planes[1] = b + m_UPlaneOffset;
-            planes[2] = b + m_VPlaneOffset;
-        }
-    }
+    if (_jsRawFrameBuffer && !_tmpFrameBuffer.empty()) std::vector<char>().swap(_tmpFrameBuffer);
+
+    char* b = _jsRawFrameBuffer ? _jsRawFrameBuffer : _tmpFrameBuffer.data();
+    
+    planes[0] = b;
+    planes[1] = b + m_UPlaneOffset;
+    planes[2] = b + m_VPlaneOffset;
 
     return 0;
 }

@@ -60,7 +60,6 @@ function render( videoFrame )
 	v.fill(videoFrame.subarray(videoFrame.VPlaneOffset, len));
 
     gl.drawArrays(this.gl.TRIANGLE_STRIP, 0, 4);
-
 }
 
 function initFrame(videoFrame)
