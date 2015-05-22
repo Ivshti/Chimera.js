@@ -8,7 +8,19 @@ JsVlcPlayer::JsVlcPlayer( const v8::Local<v8::Function>& renderCallback ) :
 {
     _jsRenderCallback.Reset( v8::Isolate::GetCurrent(), renderCallback );
 
-    _libvlc = libvlc_new( 0, nullptr );
+    const char * const vlc_args[] = {
+        "--no-media-library", // not needed?
+        "--no-spu",
+        //       "--reset-plugins-cache",
+        "--no-stats",
+        "--no-osd",
+        "--no-drop-late-frames", // This might fix the uglyness when dropping frames
+        //"--prefer-system-codecs", // optimizes a bit on OS X but not worth the risk
+        // no deinterlace
+        "--no-video-title-show" // not needed?
+    };
+
+    _libvlc = libvlc_new( sizeof(vlc_args) / sizeof(vlc_args[0]), vlc_args );
     assert( _libvlc );
     if( _player.open( _libvlc ) ) {
         vlc::basic_vmem_wrapper::open( &_player.basic_player() );
