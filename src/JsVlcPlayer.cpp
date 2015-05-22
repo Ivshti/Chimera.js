@@ -14,6 +14,7 @@ JsVlcPlayer::JsVlcPlayer( const v8::Local<v8::Function>& renderCallback ) :
         //       "--reset-plugins-cache",
         "--no-stats",
         "--no-osd",
+        "--sout-mux-caching=3000",
         "--no-drop-late-frames", // This might fix the uglyness when dropping frames
         //"--prefer-system-codecs", // optimizes a bit on OS X but not worth the risk
         // no deinterlace
