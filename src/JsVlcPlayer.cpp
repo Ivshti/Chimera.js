@@ -8,13 +8,15 @@ JsVlcPlayer::JsVlcPlayer( const v8::Local<v8::Function>& renderCallback ) :
 {
     _jsRenderCallback.Reset( v8::Isolate::GetCurrent(), renderCallback );
 
+    // https://wiki.videolan.org/VLC_command-line_help/
+    // Find a way to avoid reading for subtitles in the same folder; this behavior should be explicit
     const char * const vlc_args[] = {
         "--no-media-library", // not needed?
         "--no-spu",
-        //       "--reset-plugins-cache",
         "--no-stats",
         "--no-osd",
-        "--sout-mux-caching=3000",
+        "--sout-mux-caching","3000",
+        "--network-caching","3000",
         "--no-drop-late-frames", // This might fix the uglyness when dropping frames
         //"--prefer-system-codecs", // optimizes a bit on OS X but not worth the risk
         // no deinterlace
